@@ -79,19 +79,30 @@ class DoubleLinkedList {
 
 	public void addFirst(String n) {
 
-		Node actual = new Node(n);
+		
 		if(!first.getValue().equals(n)){
-		Node firstLast = new Node(first.getValue());
-		actual.setNext(firstLast);
-		firstLast.setPrev(actual);
-		firstLast.setNext(first.getNext());
+			Node actual = new Node(n,null,first);
+		first.setPrev(actual);
 		first = actual;
 		tam++;
 		}
 		
 	}
 
+	public boolean verificarUltimo(String n){
+	
+		if(last!=null && n.equals(last.getValue())){
+		return true;	
+		}
+		return false;
+	}
 	public int remove(String n) {
+		if(verificarUltimo(n)){
+			last = last.getPrev();
+					last.setNext(null);
+					tam--;
+			return tam;
+		}
 		int pos = 0;
 		Node actual = first;
 		while (true) {
@@ -155,7 +166,12 @@ class DoubleLinkedList {
 			next = null;
 			prev = null;
 		}
-
+		public Node(String value, Node n1, Node n2) {
+			this.value = value;
+			
+			prev = n1;
+			next = n2;
+		}
 		public String getValue() {
 			return value;
 		}
