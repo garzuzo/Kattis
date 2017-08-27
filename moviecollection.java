@@ -79,89 +79,81 @@ class DoubleLinkedList {
 
 	public void addFirst(String n) {
 
-		
-		if(!first.getValue().equals(n)){
-			Node actual = new Node(n,null,first);
-		first.setPrev(actual);
-		first = actual;
-		tam++;
+		if (!first.getValue().equals(n)) {
+			Node actual = new Node(n, null, first);
+			first.setPrev(actual);
+			first = actual;
+			tam++;
 		}
-		
+
 	}
 
-	public boolean verificarUltimo(String n){
-	
-		if(last!=null && n.equals(last.getValue())){
-		return true;	
+	public boolean verificarUltimo(String n) {
+
+		if (last != null && n.equals(last.getValue())) {
+			return true;
 		}
 		return false;
 	}
+
 	public int remove(String n) {
-		if(verificarUltimo(n)){
+		if (verificarUltimo(n)) {
 			last = last.getPrev();
-					last.setNext(null);
-					tam--;
+			last.setNext(null);
+			tam--;
 			return tam;
+		} else if (n.equals(first.getValue())) {
+			return 0;
 		}
 		int pos = 0;
-		int pos1=tam-1;
-		boolean f=false;
-		boolean l=false;
+		int pos1 = tam - 2;
+		boolean f = false;
+		boolean l = false;
 		Node actual = first;
-		Node actual1=last;
+		Node actual1 = last.getPrev();
 		while (true) {
 
 			if (!actual.getValue().equals(n)) {
 				pos++;
 				actual = actual.getNext();
-			}else{
-			f=true;	
-				
+			} else {
+				f = true;
+
 			}
-			if(!f && !actual1.getValue().equals(n)){
-				tam--;
-				actual1=actual1.getPrev();
-			}else{
-				l=true;
+			if (!f && actual1 != null && !actual1.getValue().equals(n)) {
+				pos1--;
+				actual1 = actual1.getPrev();
+			} else if (!f && actual1 != null && actual1.getValue().equals(n)) {
+				l = true;
 			}
-			if(f){
-				 if (actual == last) {
-					last = actual.getPrev();
-					actual.getPrev().setNext(null);
-					tam--;
-				} else if(actual!=first){
+			if (f) {
+				if (actual != first) {
 					actual.getPrev().setNext(actual.getNext());
 					actual.getNext().setPrev(actual.getPrev());
-					tam--;
-				}
 
-				
+				}
+				tam--;
+
 				break;
-			}else if(l){
-				 if (actual1 == last) {
-					last = actual.getPrev();
-					actual.getPrev().setNext(null);
-					tam--;
-				} else if(actual1!=first){
-					actual1.getPrev().setNext(actual1.getNext());
+			} else if (l) {
+
+				actual1.getPrev().setNext(actual1.getNext());
+				if (actual1.getNext() != null)
 					actual1.getNext().setPrev(actual1.getPrev());
-					tam--;
-				}
 
-				
+				tam--;
+
 				break;
 			}
-			 
-			}
-		if(f){
-		return pos;
-		}else{
-		return pos1;	
-		}
 
 		}
 
-		
+		if (f) {
+			return pos;
+		} else {
+			return pos1;
+		}
+
 	}
 
 	public int getTam() {
@@ -200,12 +192,14 @@ class DoubleLinkedList {
 			next = null;
 			prev = null;
 		}
+
 		public Node(String value, Node n1, Node n2) {
 			this.value = value;
-			
+
 			prev = n1;
 			next = n2;
 		}
+
 		public String getValue() {
 			return value;
 		}
