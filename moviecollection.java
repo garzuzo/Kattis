@@ -104,14 +104,28 @@ class DoubleLinkedList {
 			return tam;
 		}
 		int pos = 0;
+		int pos1=tam-1;
+		boolean f=false;
+		boolean l=false;
 		Node actual = first;
+		Node actual1=last;
 		while (true) {
 
 			if (!actual.getValue().equals(n)) {
 				pos++;
 				actual = actual.getNext();
-			} else {
-			  if (actual == last) {
+			}else{
+			f=true;	
+				
+			}
+			if(!f && !actual1.getValue().equals(n)){
+				tam--;
+				actual1=actual1.getPrev();
+			}else{
+				l=true;
+			}
+			if(f){
+				 if (actual == last) {
 					last = actual.getPrev();
 					actual.getPrev().setNext(null);
 					tam--;
@@ -123,11 +137,31 @@ class DoubleLinkedList {
 
 				
 				break;
+			}else if(l){
+				 if (actual1 == last) {
+					last = actual.getPrev();
+					actual.getPrev().setNext(null);
+					tam--;
+				} else if(actual1!=first){
+					actual1.getPrev().setNext(actual1.getNext());
+					actual1.getNext().setPrev(actual1.getPrev());
+					tam--;
+				}
+
+				
+				break;
 			}
+			 
+			}
+		if(f){
+		return pos;
+		}else{
+		return pos1;	
+		}
 
 		}
 
-		return pos;
+		
 	}
 
 	public int getTam() {
