@@ -21,72 +21,69 @@ public class addingwords {
 
 					hm.replace(name, val);
 				} else {
-					if(!name.equals("unknown"))
-					hm.put(name, val);
+					if (!name.equals("unknown"))
+						hm.put(name, val);
 				}
 
 			} else if (casoAct.equals("calc")) {
 
 				String cadena = "";
-				String resultado = "";
+
+				boolean desconocido = false;
 				int res = 0;
-				String act = "";
-				String act1 = "";
-				String pasante = "";
-				String operador = "";
-				while (!pasante.equals("=")) {
+				String casoActual = lector.nextLine();
+				casoActual = casoActual.trim();
+				String[] arreglo = casoActual.split(" ");
 
-					if (act.equals("")) {
-						act = lector.next();
+				String op1 = arreglo[0];
+				String operador = arreglo[1];
+				String op2 = arreglo[2];
+				if (operador.equals("+")) {
+					if (hm.containsKey(op1) && hm.containsKey(op2)) {
+						res = hm.get(op1) + hm.get(op2);
 
-						cadena += act + " ";
-						if (resultado.equals("") && hm.containsKey(act)) {
+					} else
+						desconocido = true;
 
-							res += hm.get(act);
+				} else {
+					if (hm.containsKey(op1) && hm.containsKey(op2)) {
+						res = hm.get(op1) - hm.get(op2);
+					} else
+						desconocido = true;
+				}
 
+				for (int i = 3; i < arreglo.length - 2 && !desconocido; i++) {
+
+					operador = arreglo[i];
+					op2 = arreglo[i + 1];
+					if (operador.equals("+")) {
+						if (hm.containsKey(op2)) {
+							res += hm.get(op2);
 						} else {
-							resultado = "unknown";
-							res = 0;
+							desconocido = true;
+							break;
 						}
 					} else {
-						act = act1;
+						if (hm.containsKey(op2)) {
+						res -= hm.get(op2);
+						}else{
+							desconocido=true;
+						break;
+						}
 					}
-					operador = lector.next();
-					if (pasante.equals(""))
-						act1 = lector.next();
-					else if (pasante.equals("+") || pasante.equals("-")) {
-						String temp = operador;
-						operador = pasante;
-						act1 = temp;
-					} else {
-						act1 = pasante;
-					}
-					cadena += operador+" ";
-					cadena += act1 + " ";
-					if (resultado.equals("") && hm.containsKey(act1)) {
-						if (operador.equals("+"))
-							res += hm.get(act1);
-						else
-							res -= hm.get(act1);
-					} else {
-						resultado = "unknown";
-						res = 0;
-					}
-
-					pasante = lector.next();
 				}
-				if (res == 0)
-					cadena += "= " + resultado;
+				if (desconocido)
+					cadena += casoActual + " unknown";
 				else {
 
 					Iterator<String> it = hm.keySet().iterator();
 					if (!hm.containsValue(res)) {
-						cadena += "= unknown";
+						cadena += casoActual+" unknown";
 					} else {
 						while (it.hasNext()) {
 							String actual = it.next();
 							if (hm.get(actual) == res) {
-								cadena += "= " + actual;
+								cadena +=casoActual+" "+ actual;
 								break;
 							}
 
