@@ -21,7 +21,7 @@ public class addingwords {
 
 					hm.replace(name, val);
 				} else {
-					if (!name.equals("unknown"))
+				
 						hm.put(name, val);
 				}
 
@@ -54,7 +54,7 @@ public class addingwords {
 							desconocido = true;
 					}
 
-					for (int i = 3; i < arreglo.length - 2 && !desconocido; i++) {
+					for (int i = 3; i < arreglo.length - 2 && !desconocido; i+=2) {
 
 						operador = arreglo[i];
 						op2 = arreglo[i + 1];
