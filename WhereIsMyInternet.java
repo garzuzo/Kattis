@@ -97,30 +97,4 @@ class UnionFind { // OOP style
 		return setSize.get(findSet(i));
 	}
 }
-
-class ch2_08_unionfind_ds {
-	public static void main(String[] args) {
-		System.out.printf("Assume that there are 5 disjoint sets initially\n");
-		UnionFind UF = new UnionFind(5); // create 5 disjoint sets
-		System.out.printf("%d\n", UF.numDisjointSets()); // 5
-		UF.unionSet(0, 1);
-		System.out.printf("%d\n", UF.numDisjointSets()); // 4
-		UF.unionSet(2, 3);
-		System.out.printf("%d\n", UF.numDisjointSets()); // 3
-		UF.unionSet(4, 3);
-		System.out.printf("%d\n", UF.numDisjointSets()); // 2
-		System.out.printf("isSameSet(0, 3) = %b\n", UF.isSameSet(0, 3)); // will
-																			// return
-																			// false
-		System.out.printf("isSameSet(4, 3) = %b\n", UF.isSameSet(4, 3)); // will
-																			// return
-																			// true
-		for (int i = 0; i < 5; i++) // findSet will return 1 for {0, 1} and 3
-									// for {2, 3, 4}
-			System.out.printf("findSet(%d) = %d, sizeOfSet(%d) = %d\n", i, UF.findSet(i), i, UF.sizeOfSet(i));
-		UF.unionSet(0, 3);
-		System.out.printf("%d\n", UF.numDisjointSets()); // 1
-		for (int i = 0; i < 5; i++) // findSet will return 3 for {0, 1, 2, 3, 4}
-			System.out.printf("findSet(%d) = %d, sizeOfSet(%d) = %d\n", i, UF.findSet(i), i, UF.sizeOfSet(i));
-	}
 }
