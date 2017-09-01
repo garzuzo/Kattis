@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Vector;
 
 public class virtualFriends {
 
@@ -24,220 +25,87 @@ public class virtualFriends {
 		for (int i = 0; i < nTests; i++) {
 			int F = lector.nextInt();
 
-			GrafoLista<String> grafo = new GrafoLista<String>();
+		UnionFind uf=new UnionFind(F*2);
+			HashMap<String,Integer> hm=new HashMap<String,Integer>();
+			int contAgregados=0;
 			for (int j = 0; j < F; j++) {
 				String f1 = lector.next();
 				String f2 = lector.next();
 
-				grafo.agregar(f1);
-
-				grafo.agregar(f2);
-
-				grafo.conectar(f1, f2);
-
-				int totalAmigos = grafo.recorridoBFS(f2);
-				System.out.println(totalAmigos);
-
-			}
-		}
-
-	}
-
-}
-
-class GrafoLista<V extends Comparable<V>> {
-
-	private int size;
-
-	private HashMap<V, Vertice> agregados;
-
-	private static int MAX = Integer.MAX_VALUE;
-
-	private TreeMap<Vertice<V>, TreeSet<Arista<V>>> treeMap;
-
-	public GrafoLista() {
-		size = 0;
-
-		treeMap = new TreeMap<Vertice<V>, TreeSet<Arista<V>>>();
-		agregados = new HashMap<V, Vertice>();
-	}
-
-	public boolean agregar(V v) {
-		if (!agregados.containsKey(v)) {
-
-			Vertice<V> nuevo = new Vertice(v);
-			agregados.put(v, nuevo);
-			return agregar(nuevo);
-		} else
-			return true;
-	}
-
-	private boolean agregar(Vertice<V> v) {
-		if (!treeMap.containsKey(v)) {
-			v.setPos(size);
-			treeMap.put(v, new TreeSet<Arista<V>>());
-			size++;
-			return true;
-		} else
-			return false;
-	}
-
-	public boolean conectar(V v1, V v2) {
-
-		Vertice<V> inicio = agregados.get(v1);
-		Vertice<V> fin = agregados.get(v2);
-		return conectar(inicio, fin);
-	}
-
-	public Vertice<V> buscar(V valor) {
-
-		if (agregados.containsKey(valor)) {
-
-			return agregados.get(valor);
-		}
-		return null;
-	}
-
-	private boolean conectar(Vertice<V> inicio, Vertice<V> fin) {
-
-		if (treeMap.containsKey(inicio) && treeMap.containsKey(fin)) {
-			Arista<V> aristTemp = new Arista<V>(inicio, fin);
-			treeMap.get(inicio).add(aristTemp);
-			Arista<V> aristTemp2 = new Arista<V>(fin, inicio);
-			treeMap.get(fin).add(aristTemp2);
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-	public int recorridoBFS(V source) {
-		return recorridoBFS(agregados.get(source));
-	}
-
-	private int recorridoBFS(Vertice<V> source) {
-
-		Queue<Vertice<V>> queue = new ArrayDeque<>();
-		queue.add(source);
-		HashSet<Vertice<V>> hs = new HashSet<Vertice<V>>();
-		int cont = 0;
-		while (!queue.isEmpty()) {
-			Vertice<V> que = queue.poll();
-			if (!hs.contains(que)) {
-
-				hs.add(que);
-				// contador
-				cont++;
-				Iterator<Arista<V>> it = treeMap.get(que).iterator();
-
-				while (it.hasNext()) {
-					Vertice<V> vertice = it.next().getVertex2();
-					if (!hs.contains(vertice)) {
-						queue.add(vertice);
-					}
+				if(!hm.containsKey(f1)){
+					hm.put(f1,contAgregados);
+					       contAgregados++;
 				}
+				if(!hm.containsKey(f2)){
+						hm.put(f2,contAgregados);
+					       contAgregados++;
+				}
+				
+				uf.unionSet(hm.get(f1),hm.get(f2));
+				uf.unionSet(hm.get(f2),hm.get(f1));
+				System.out.println(uf.sizeOfSet(hm.get(f1)));
+
 			}
 		}
 
-		return cont;
 	}
 
-	public TreeMap<Vertice<V>, TreeSet<Arista<V>>> getTreeMap() {
-		return treeMap;
-	}
-
-	public int size() {
-		return size;
-	}
 }
 
-class Vertice<T extends Comparable<T>> implements Comparable<Vertice<T>> {
+// Union-Find Disjoint Sets Library written in OOP manner, using both path
+// compression and union by rank heuristics
+class UnionFind { // OOP style
+	private Vector<Integer> p, rank, setSize;
+	private int numSets;
 
-	private T value;
-
-	private int pos;
-
-	public Vertice(T val) {
-		value = val;
-
-	}
-
-	public int getPos() {
-		return pos;
-	}
-
-	public void setPos(int pos) {
-		this.pos = pos;
-	}
-
-	public T getValue() {
-		return value;
-	}
-
-	public void setValue(T value) {
-		this.value = value;
-	}
-
-	@Override
-	public int compareTo(Vertice<T> o) {
-		return value.compareTo(o.getValue());
-	}
-}
-
-class Arista<T extends Comparable<T>> implements Comparable<Arista<T>> {
-
-	private Vertice<T> vertex1;
-
-	private Vertice<T> vertex2;
-
-	private double cost;
-
-	public Arista(Vertice<T> vertex1, Vertice<T> vertex2, double cost) {
-		this.vertex1 = vertex1;
-		this.vertex2 = vertex2;
-		this.cost = cost;
-	}
-
-	public Arista(Vertice<T> vertex1, Vertice<T> vertex2) {
-		cost = 0;
-		this.vertex1 = vertex1;
-		this.vertex2 = vertex2;
-	}
-
-	@Override
-	public int compareTo(Arista<T> o) {
-
-		if (vertex1.getValue().compareTo(vertex2.getValue()) > 0) {
-			return 1;
-		} else if (vertex1.getValue().compareTo(vertex2.getValue()) < 0) {
-			return -1;
-		} else {
-			return 0;
+	public UnionFind(int N) {
+		p = new Vector<Integer>(N);
+		rank = new Vector<Integer>(N);
+		setSize = new Vector<Integer>(N);
+		numSets = N;
+		for (int i = 0; i < N; i++) {
+			p.add(i);
+			rank.add(0);
+			setSize.add(1);
 		}
 	}
 
-	public Vertice<T> getVertex1() {
-		return vertex1;
+	public int findSet(int i) {
+		if (p.get(i) == i)
+			return i;
+		else {
+			int ret = findSet(p.get(i));
+			p.set(i, ret);
+			return ret;
+		}
 	}
 
-	public void setVertex1(Vertice<T> vertex1) {
-		this.vertex1 = vertex1;
+	public Boolean isSameSet(int i, int j) {
+		return findSet(i) == findSet(j);
 	}
 
-	public Vertice<T> getVertex2() {
-		return vertex2;
+	public void unionSet(int i, int j) {
+		if (!isSameSet(i, j)) {
+			numSets--;
+			int x = findSet(i), y = findSet(j);
+			// rank is used to keep the tree short
+			if (rank.get(x) > rank.get(y)) {
+				p.set(y, x);
+				setSize.set(x, setSize.get(x) + setSize.get(y));
+			} else {
+				p.set(x, y);
+				setSize.set(y, setSize.get(y) + setSize.get(x));
+				if (rank.get(x) == rank.get(y))
+					rank.set(y, rank.get(y) + 1);
+			}
+		}
 	}
 
-	public void setVertex2(Vertice<T> vertex2) {
-		this.vertex2 = vertex2;
+	public int numDisjointSets() {
+		return numSets;
 	}
 
-	public double getCost() {
-		return cost;
-	}
-
-	public void setCost(double cost) {
-		this.cost = cost;
+	public int sizeOfSet(int i) {
+		return setSize.get(findSet(i));
 	}
 }
